@@ -1,154 +1,102 @@
 ---
-title: "Research_Project_Analysis"
-author: "Nick Feng"
-output: github_document
+title: Setting up for functional analysis
+author: Mary Piper, Meeta Mistry, Radhika Khetani, Jihe Liu
+date: "March 29th, 2021"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Approximate time: 15 minutes
 
-```{r, warning=FALSE, message=FALSE}
+## Set up
+
+For this module, we will be working within an RStudio project. In order to follow along you will need to **download the R project**, if you haven't done so already. The project can be accessed using [this link](https://github.com/hbctraining/Training-modules/blob/master/data/Functional_analysis.zip?raw=true).
+
+Once downloaded, you should see a file called `Functional_analysis.zip` on your computer (likely, in your Downloads folder). Unzipping this file will result in a folder of the same name. Move the folder to the location on your computer where you would like to perform the analysis.
+
+Open up the folder. The contents will look like the screenshot below:
+
+<img src="../img/directory_structure.png" width="300">
+
+**Locate the `.Rproj file` and double-click on it.** This will open up RStudio with the "Functional_analysis" project loaded. 
+
+An example of the **RStudio interface is shown below**. You will want to make sure that you have the directory structure (sub-directories and files) as shown in the screenshot below. 
+
+Once you have reached this stage, you are ready to get started with the lessons!
+
+<p align="center">
+<img src="../img/rstudio_interface.png" >
+</p>
+
+### Dataset
+
+To interpret the results of our functional analysis, it is necessary to understand our dataset. We will be using the output from the differential expression analysis of a real RNA-Seq dataset that is part of a larger study described in [Kenny PJ et al, Cell Rep 2014](http://www.ncbi.nlm.nih.gov/pubmed/25464849). 
+
+The goal of the study was to investigate the interactions between various genes involved in Fragile X syndrome, a disease in which there is aberrant production of the FMRP protein that results in cognitive impairment and autistic-like features.
+
+> **FMRP** is “most commonly found in the brain and is essential for normal cognitive development and female reproductive function. Mutations of this gene can lead to fragile X syndrome, mental retardation, premature ovarian failure, autism, Parkinson's disease, developmental delays and other cognitive deficits.” - from [wikipedia](https://en.wikipedia.org/wiki/FMR1)
+
+> **MOV10**, is a putative RNA helicase that is also associated with **FMRP** in the context of the microRNA pathway. 
+
+**The hypothesis tested by [the paper](http://www.ncbi.nlm.nih.gov/pubmed/25464849) is that FMRP and MOV10 associate and regulate the translation of a subset of RNAs.**
+
+<p align="center">
+<img src="../img/mov10-model.png" width="400">
+</p>
+
+<cite>Illustration adapted from [Kenny PJ et al, Cell Rep 2014](http://www.ncbi.nlm.nih.gov/pubmed/25464849)</cite>
+
+For today's workshop, we will be using the output of differential gene expression (DGE) analysis performed using the R package DESeq2 to identify differentially expressed genes between control and cells overexpressing Mov10. You should have downloaded the `Mov10oe_DE_results.csv` file with these results already.
+
+### Reading in the data files
+
+Let's open the empty R script file `Functional_analysis.R` in the project folder. Next, let's read in the differential expression results file we have downloaded and call the new object `res_tableOE` (OE is for overexpression):
+
+```r
+## Load libraries
 library(tidyverse)
+
+## Read in differential expression results
+res_tableOE <- read.csv("data/Mov10oe_DE_results.csv", row.names = 1)
+
+## Create a tibble
+res_tableOE_tb <- res_tableOE %>%
+  rownames_to_column(var="gene") %>% 
+  as_tibble()
+
+
 ```
 
-The code below demonstrates the last step of the research project--From Sequence to Gene Expression. (previous steps available at our [Github page](https://github.com/NickuFeng/Research-Project)) **This script was originally written by our project mentor, professor Hae Kyung Im.** This is a new version developed based on her work. 
+### Load the R libraries
 
-# Set up
+> If not already installed, you'll need to install the R packages we will using for this workshop : 
+>  
+> ```r
+> # Install CRAN packages
+> install.packages(c("BiocManager", "devtools", "tidyverse"))
+> 
+> # Install Bioconductor packages
+> BiocManager::install(c("clusterProfiler", "DOSE", "org.Hs.eg.db", "pathview", "AnnotationDbi", "EnsDb.Hsapiens.v75"))
+> 
+> # Optional for the lesson:
+> BiocManager::install(c("gProfileR", "treemap", "SPIA", "stephenturner/annotables"))
+> ```
+> 
+> _**Note that these package names are case sensitive!**_
 
-We import two files we generated from the previous steps of the project.
-```{r, message=FALSE}
-CEU = read_csv(glue::glue("D:/Research-project/Data/Pre_Enf_CEU_correlation_table.csv"))
-colnames(CEU)[1]<-'Gene'
-YRI = read_csv(glue::glue("D:/Research-project/Data/Pre_Enf_YRI_correlation_table.csv"))
-colnames(YRI)[1]<-'Gene'
-library(knitr)
-kable(CEU[1:5,],caption='A Glance at The CEU Table')
+Load the libraries (without any error messages) using `library()`:
+
+```r
+## Load libraries one at a time
+library(clusterProfiler)
+library(DOSE)
+library(org.Hs.eg.db)
+library(pathview)
+library(tidyverse)
+library(AnnotationDbi)
+library(EnsDb.Hsapiens.v75)
+
+# Optional for the lesson
+library(gProfileR)
+library(treemap)
+library(SPIA)
+library(annotables)
 ```
-For each table, the first column is the target gene, the second and third columns are the correlation coefficients. They are the __model's prediction across sample group on the target gene__ correlated with __the true observed value from Geuvadis Data set__. The forth column is the strand information of the gene. 
-
-# Analysis 
-
-## Enformer: CEU vs YRI
-We first take a look at how does Enformer performs across population.
-```{r}
-plot(CEU$Enformer,YRI$Enformer); abline(0,1)
-summary(CEU$Enformer)
-summary(YRI$Enformer)
-```
-It looks like Enformer has a steady performance regardless the input's origin ancestry.
-
-## PrediXcan: CEU vs YRI
-Then we check on Predixcan's performance across population.
-```{r}
-plot(CEU$Predixcan,YRI$Predixcan); abline(0,1)
-summary(CEU$Predixcan)
-summary(YRI$Predixcan)
-```
-Looking at the plot and the summary, we notice Predixcan generally make better predictions when its input data has an European ancestry. It loses some accuracy when its input is non-European, which in this case is African ancestry.
-
-## Histogram of each variable
-We make some histograms to gain some understanding about how is the data distributed.
-```{r}
-par(mfrow=c(2,2))
-rango=c(-1,1)
-hist(CEU$Enformer,xlim=rango)
-hist(YRI$Enformer,xlim=rango)
-hist(CEU$Predixcan,xlim=rango)
-hist(YRI$Predixcan,xlim=rango)
-
-par(mfrow=c(1,1)) #reset
-```
-
-## CEU: Enformer vs. Predixcan
-
-We compare two model's performance when predicting the group with European ancestry
-```{r}
-plot(CEU$Enformer,CEU$Predixcan); abline(0,1)
-```
-
-## YRI: Enformer vs. Predixcan
-
-We compare two model's performance when predicting the group with African ancestry
-```{r}
-plot(YRI$Enformer,YRI$Predixcan); abline(0,1)
-```
-
-We notice there is a sign-flip issue occurring with Enformer, but we decide to ignore the problem for now. Instead, we will make our comparison with either absolute value or the squared value of the corr.coef. 
-
-## CEU: Enformer vs. Predixcan
-
-```{r}
-plot(abs(CEU$Enformer),abs(CEU$Predixcan)); abline(0,1)
-```
-
-## YRI: Enformer vs. Predixcan
-
-```{r}
-
-plot(abs(YRI$Enformer),abs(YRI$Predixcan)); abline(0,1)
-```
-
-# Prelimary Findings
-
-## 1. PrediXcan outperforms Enformer in BOTH EUR and YRI
-
-```{r}
-## CEU: Enformer vs. Predixcan
-qqplot((CEU$Enformer)^2,(CEU$Predixcan)^2); abline(0,1)
-title("PrediXcan outperforms Enformer in CEU")
-```
-```{r}
-## YRI: Enformer vs. Predixcan
-qqplot((YRI$Enformer)^2,(YRI$Predixcan)^2); abline(0,1)
-title("PrediXcan outperforms Enformer in YRI")
-```
-
-Looking at these two plots, it is clear that PrediXcan outperforms Enformer in **BOTH** European and African ancestry sample groups.
-
-## 2. PrediXcan performance in YRI worse than in EUR
-
-```{r}
-## PrediXcan: CEU vs YRI
-qqplot((CEU$Predixcan)^2,(YRI$Predixcan)^2);abline(0,1)
-title("PrediXcan performance in YRI worse than in CEU")
-```
-
-However, PrediXcan suffers a lost in prediction accuracy when its input data comes from a non-European individual. 
-
-## 3. Enformer's performance does not change between EUR and YRI
-
-```{r}
-## Enformer: CEU vs YRI
-qqplot((CEU$Enformer)^2,(YRI$Enformer)^2);abline(0,1)
-title("Enformer's performance does not change between EUR and YRI")
-```
-
-Enformer's performance does not change between EUR and YRI. This is a exciting finding because it implies that Enformer's algorithm has the potential to overcome PrediXcan's limitations, which is a model trained mainly on data with European ancestry. 
-
-## 4. Relative performance: Portability of Enformer better than Predixcan
-
-```{r}
-epsi=0.1
-portability_Enformer = ( abs(YRI$Enformer) + epsi )  / ( abs(CEU$Enformer)  + epsi )
-portability_Predixcan = ( abs(YRI$Predixcan) + epsi )/ ( abs(CEU$Predixcan) + epsi )
- 
-qqplot(portability_Enformer,portability_Predixcan);abline(0,1)
-title("Portability of Enformer better than Predixcan")
-```
-```{r}
-summary(portability_Enformer)
-```
-```{r}
-summary(portability_Predixcan)
-```
-
-Following the thread of the previous finding, we also want to test the portability of the two models. We found that Enformer has a better portability then PrediXcan does.
-
-## 5. Violin Plot
-
-```{r, warning=FALSE}
-tibble(Enformer=portability_Enformer,Predixcan=portability_Predixcan )  %>% pivot_longer(cols = c(Enformer,Predixcan),names_to="type",values_to="portability") %>% ggplot(aes(type,portability)) + geom_violin() + geom_boxplot(width=0.3) + geom_jitter(size=2,col='gray') + theme_bw(base_size = 15) + ggtitle("Enformer Portability to YRI Higher than Predixcan")
-```
-
-This Violin Plot further proves the finding #4. 
