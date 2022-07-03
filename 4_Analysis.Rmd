@@ -1,7 +1,7 @@
 ---
 title: "Research_Project_Analysis"
 author: "Nick Feng"
-output: github_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -18,9 +18,9 @@ The code below demonstrates the last step of the research project--From Sequence
 
 We import two files we generated from the previous steps of the project.
 ```{r, message=FALSE}
-CEU = read_csv(glue::glue("D:/Research-project/Data/Pre_Enf_CEU_correlation_table.csv"))
+CEU = read_csv(glue::glue("Data/Pre_Enf_CEU_correlation_table.csv"))
 colnames(CEU)[1]<-'Gene'
-YRI = read_csv(glue::glue("D:/Research-project/Data/Pre_Enf_YRI_correlation_table.csv"))
+YRI = read_csv(glue::glue("Data/Pre_Enf_YRI_correlation_table.csv"))
 colnames(YRI)[1]<-'Gene'
 library(knitr)
 kable(CEU[1:5,],caption='A Glance at The CEU Table')
