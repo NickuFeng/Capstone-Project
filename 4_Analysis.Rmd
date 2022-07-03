@@ -1,5 +1,5 @@
 ---
-title: "Research_Project_Analysis"
+title: "Capstone_Project_Analysis"
 author: "Nick Feng"
 output: html_document
 ---
