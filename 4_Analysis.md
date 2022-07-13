@@ -67,7 +67,7 @@ the strand information of the gene.
 We make some histograms to gain some understanding about how is the data
 distributed.
 
-<img src="/Data/Images/Histogram-1.png" style="height: 300px; width:300px;"/>
+<img src="/Data/Images/Histogram-1.png" style="height: 500px; width:500">
 
 ## Evaluating Model’s Performance
 
