@@ -71,7 +71,7 @@ distributed.
 
 ## Evaluating Model’s Performance
 
-![](4_Analysis_files/figure-markdown_strict/4_model_performance-1.png)![](4_Analysis_files/figure-markdown_strict/4_model_performance-2.png)![](4_Analysis_files/figure-markdown_strict/4_model_performance-3.png)![](4_Analysis_files/figure-markdown_strict/4_model_performance-4.png)
+![](4_Analysis_files/figure-markdown_strict/Model%20Performance-1.png)![](4_Analysis_files/figure-markdown_strict/Model%20Performance-2.png)![](4_Analysis_files/figure-markdown_strict/Model%20Performance-3.png)![](4_Analysis_files/figure-markdown_strict/Model%20Performance-4.png)
 
 ### Enformer: CEU vs YRI
 
@@ -122,7 +122,7 @@ decide to ignore the problem for now. Instead, we will make our
 comparison with either absolute value or the squared value of the
 corr.coef.
 
-![](4_Analysis_files/figure-markdown_strict/Abs_Enf_vs_Pre-1.png)
+![](4_Analysis_files/figure-markdown_strict/Absolute_Enf_YRI-1.png)
 
 # Prelimary Findings
 
@@ -155,7 +155,7 @@ qqplot((CEU$Predixcan)^2,(YRI$Predixcan)^2, xlab = 'The squared value of PrediXc
 title("PrediXcan performance in YRI worse than in CEU")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/Squared_Pred-1.png)
+![](4_Analysis_files/figure-markdown_strict/Squared_PrediXcan-1.png)
 
 However, PrediXcan suffers a lost in prediction accuracy when its input
 data comes from a non-European individual.
@@ -168,7 +168,7 @@ qqplot((CEU$Enformer)^2,(YRI$Enformer)^2, xlab = 'The squared value of Enformer 
 title("Enformer's performance does not change between EUR and YRI")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/Squared_Enf-1.png)
+![](4_Analysis_files/figure-markdown_strict/Squared_Enformer-1.png)
 
 Enformer’s performance does not change between EUR and YRI. This is a
 exciting finding because it implies that Enformer’s algorithm has the
@@ -188,28 +188,12 @@ title("Portability of Enformer better than Predixcan")
 
 ![](4_Analysis_files/figure-markdown_strict/Portability-1.png)
 
-``` r
-print('portability of Enformer')
-```
-
     ## [1] "portability of Enformer"
-
-``` r
-summary(portability_Enformer)
-```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
     ##  0.2691  0.6810  0.9368  1.0966  1.2542  3.6703       1
 
-``` r
-print('portability of PrediXcan')
-```
-
     ## [1] "portability of PrediXcan"
-
-``` r
-summary(portability_Predixcan)
-```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##  0.2293  0.5711  0.9375  0.9813  1.2809  3.0142
