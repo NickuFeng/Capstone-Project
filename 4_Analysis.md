@@ -1,7 +1,3 @@
-``` r
-library(tidyverse)
-```
-
 The code below demonstrates the last step of the research project–From
 Sequence to Gene Expression. (previous steps available at our [Github
 page](https://github.com/NickuFeng/Research-Project)) **This script was
@@ -11,15 +7,6 @@ is a new version developed based on her work.
 # Set up
 
 We import two files we generated from the previous steps of the project.
-
-``` r
-CEU = read_csv(glue::glue("Data/Pre_Enf_CEU_correlation_table.csv"))
-colnames(CEU)[1]<-'Gene'
-YRI = read_csv(glue::glue("Data/Pre_Enf_YRI_correlation_table.csv"))
-colnames(YRI)[1]<-'Gene'
-library(knitr)
-kable(CEU[1:5,],caption='A Glance at The CEU Table')
-```
 
 <table>
 <caption>A Glance at The CEU Table</caption>
@@ -75,124 +62,67 @@ the strand information of the gene.
 
 # Analysis
 
-## Enformer: CEU vs YRI
-
-We first take a look at how does Enformer performs across population.
-
-``` r
-plot(CEU$Enformer,YRI$Enformer); abline(0,1)
-```
-
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-3-1.png)
-
-``` r
-summary(CEU$Enformer)
-```
-
-    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-    ## -0.44002 -0.10597  0.05238  0.02481  0.13789  0.44571        1
-
-``` r
-summary(YRI$Enformer)
-```
-
-    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-    ## -0.29366 -0.06436  0.04685  0.05442  0.19410  0.44971        1
-
-It looks like Enformer has a steady performance regardless the input’s
-origin ancestry.
-
-## PrediXcan: CEU vs YRI
-
-Then we check on Predixcan’s performance across population.
-
-``` r
-plot(CEU$Predixcan,YRI$Predixcan); abline(0,1)
-```
-
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-4-1.png)
-
-``` r
-summary(CEU$Predixcan)
-```
-
-    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    ## -0.22731  0.04063  0.15713  0.17553  0.29781  0.75288
-
-``` r
-summary(YRI$Predixcan)
-```
-
-    ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-    ## -0.207979  0.001836  0.126608  0.127161  0.246127  0.625439
-
-Looking at the plot and the summary, we notice Predixcan generally make
-better predictions when its input data has an European ancestry. It
-loses some accuracy when its input is non-European, which in this case
-is African ancestry.
-
 ## Histogram of each variable
 
 We make some histograms to gain some understanding about how is the data
 distributed.
 
-``` r
-par(mfrow=c(2,2))
-rango=c(-1,1)
-hist(CEU$Enformer,xlim=rango)
-hist(YRI$Enformer,xlim=rango)
-hist(CEU$Predixcan,xlim=rango)
-hist(YRI$Predixcan,xlim=rango)
-```
+![](4_Analysis_files/figure-markdown_strict/Histogram-1.png)
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+## Evaluating Model’s Performance
 
-``` r
-par(mfrow=c(1,1)) #reset
-```
+![](4_Analysis_files/figure-markdown_strict/4_model_performance-1.png)![](4_Analysis_files/figure-markdown_strict/4_model_performance-2.png)![](4_Analysis_files/figure-markdown_strict/4_model_performance-3.png)![](4_Analysis_files/figure-markdown_strict/4_model_performance-4.png)
 
-## CEU: Enformer vs. Predixcan
+### Enformer: CEU vs YRI
 
-We compare two model’s performance when predicting the group with
-European ancestry
+We first take a look at how does Enformer performs across population
+(upper left), and it looks like Enformer has a steady performance
+regardless the input’s origin ancestry because the dots are
+approximately equally distributed around the identity line.
 
-``` r
-plot(CEU$Enformer,CEU$Predixcan); abline(0,1)
-```
+    ## [1] "The summary of PrediXcan on CEU group"
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-6-1.png)
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+    ## -0.44002 -0.10597  0.05238  0.02481  0.13789  0.44571        1
 
-## YRI: Enformer vs. Predixcan
+    ## [1] "The summary of PrediXcan on YRI group"
 
-We compare two model’s performance when predicting the group with
-African ancestry
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+    ## -0.29366 -0.06436  0.04685  0.05442  0.19410  0.44971        1
 
-``` r
-plot(YRI$Enformer,YRI$Predixcan); abline(0,1)
-```
+### PrediXcan: CEU vs YRI
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+Then we check on PrediXcan’s performance across population (upper
+right). Combining the plot and the summary, we notice PrediXcan
+generally make better predictions when its input data has an European
+ancestry because there are more dots located below the identity line. It
+loses some accuracy when its input is non-European, which in this case
+is African ancestry.
+
+    ## [1] "The summary of PrediXcan on CEU group"
+
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    ## -0.22731  0.04063  0.15713  0.17553  0.29781  0.75288
+
+    ## [1] "The summary of PrediXcan on YRI group"
+
+    ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+    ## -0.207979  0.001836  0.126608  0.127161  0.246127  0.625439
+
+### Enformer vs. PrediXcan on CEU and YRI group\*
+
+Then, we compare two model’s performance when making predictions on the
+group with European ancestry and the group with African ancestry (The
+bottom two graphs).
+
+*Enformer vs. PrediXcan on CEU and YRI group Extended*
 
 We notice there is a sign-flip issue occurring with Enformer, but we
 decide to ignore the problem for now. Instead, we will make our
 comparison with either absolute value or the squared value of the
 corr.coef.
 
-## CEU: Enformer vs. Predixcan
-
-``` r
-plot(abs(CEU$Enformer),abs(CEU$Predixcan)); abline(0,1)
-```
-
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-8-1.png)
-
-## YRI: Enformer vs. Predixcan
-
-``` r
-plot(abs(YRI$Enformer),abs(YRI$Predixcan)); abline(0,1)
-```
-
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-9-1.png)
+![](4_Analysis_files/figure-markdown_strict/Abs_Enf_vs_Pre-1.png)
 
 # Prelimary Findings
 
@@ -200,19 +130,19 @@ plot(abs(YRI$Enformer),abs(YRI$Predixcan)); abline(0,1)
 
 ``` r
 ## CEU: Enformer vs. Predixcan
-qqplot((CEU$Enformer)^2,(CEU$Predixcan)^2); abline(0,1)
+qqplot((CEU$Enformer)^2,(CEU$Predixcan)^2, xlab = 'The squared value of Enformer in CEU', ylab = 'The squared value of PrediXcan in CEU', frame=FALSE); abline(0,1)
 title("PrediXcan outperforms Enformer in CEU")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](4_Analysis_files/figure-markdown_strict/Squared_CEU-1.png)
 
 ``` r
 ## YRI: Enformer vs. Predixcan
-qqplot((YRI$Enformer)^2,(YRI$Predixcan)^2); abline(0,1)
+qqplot((YRI$Enformer)^2,(YRI$Predixcan)^2, xlab = 'The squared value of Enformer in YRI', ylab = 'The squared value of PrediXcan in YRI'); abline(0,1)
 title("PrediXcan outperforms Enformer in YRI")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-11-1.png)
+![](4_Analysis_files/figure-markdown_strict/Squared_YRI-1.png)
 
 Looking at these two plots, it is clear that PrediXcan outperforms
 Enformer in **BOTH** European and African ancestry sample groups.
@@ -221,11 +151,11 @@ Enformer in **BOTH** European and African ancestry sample groups.
 
 ``` r
 ## PrediXcan: CEU vs YRI
-qqplot((CEU$Predixcan)^2,(YRI$Predixcan)^2);abline(0,1)
+qqplot((CEU$Predixcan)^2,(YRI$Predixcan)^2, xlab = 'The squared value of PrediXcan in CEU', ylab = 'The squared value of PrediXcan in YRI');abline(0,1)
 title("PrediXcan performance in YRI worse than in CEU")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-12-1.png)
+![](4_Analysis_files/figure-markdown_strict/Squared_Pred-1.png)
 
 However, PrediXcan suffers a lost in prediction accuracy when its input
 data comes from a non-European individual.
@@ -234,11 +164,11 @@ data comes from a non-European individual.
 
 ``` r
 ## Enformer: CEU vs YRI
-qqplot((CEU$Enformer)^2,(YRI$Enformer)^2);abline(0,1)
+qqplot((CEU$Enformer)^2,(YRI$Enformer)^2, xlab = 'The squared value of Enformer in CEU group', ylab = 'The squared value of Enformer in YRI group');abline(0,1)
 title("Enformer's performance does not change between EUR and YRI")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+![](4_Analysis_files/figure-markdown_strict/Squared_Enf-1.png)
 
 Enformer’s performance does not change between EUR and YRI. This is a
 exciting finding because it implies that Enformer’s algorithm has the
@@ -256,7 +186,13 @@ qqplot(portability_Enformer,portability_Predixcan);abline(0,1)
 title("Portability of Enformer better than Predixcan")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+![](4_Analysis_files/figure-markdown_strict/Portability-1.png)
+
+``` r
+print('portability of Enformer')
+```
+
+    ## [1] "portability of Enformer"
 
 ``` r
 summary(portability_Enformer)
@@ -264,6 +200,12 @@ summary(portability_Enformer)
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
     ##  0.2691  0.6810  0.9368  1.0966  1.2542  3.6703       1
+
+``` r
+print('portability of PrediXcan')
+```
+
+    ## [1] "portability of PrediXcan"
 
 ``` r
 summary(portability_Predixcan)
@@ -282,6 +224,6 @@ portability then PrediXcan does.
 tibble(Enformer=portability_Enformer,Predixcan=portability_Predixcan )  %>% pivot_longer(cols = c(Enformer,Predixcan),names_to="type",values_to="portability") %>% ggplot(aes(type,portability)) + geom_violin() + geom_boxplot(width=0.3) + geom_jitter(size=2,col='gray') + theme_bw(base_size = 15) + ggtitle("Enformer Portability to YRI Higher than Predixcan")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/unnamed-chunk-17-1.png)
+![](4_Analysis_files/figure-markdown_strict/Violin-1.png)
 
 This Violin Plot further proves the finding \#4.
