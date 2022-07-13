@@ -1,6 +1,6 @@
 The code below demonstrates the last step of the research project–From
 Sequence to Gene Expression. (previous steps available at our [Github
-page](https://github.com/NickuFeng/Research-Project)) **This script was
+page](https://github.com/NickuFeng/Capstone-Project)) **This script was
 originally written by our project mentor, professor Hae Kyung Im.** This
 is a new version developed based on her work.
 
