@@ -67,11 +67,16 @@ the strand information of the gene.
 We make some histograms to gain some understanding about how is the data
 distributed.
 
-![](4_Analysis_files/figure-markdown_strict/Histogram-1.png)
+<p align="center">
+<img src="/Data/Images/Histogram-1.png" style="height: 450; width:450;"> 
+</p>
 
 ## Evaluating Model’s Performance
 
-![](4_Analysis_files/figure-markdown_strict/Model%20Performance-1.png)
+<p align="center">
+<img src="/Data/Images/Model Performance-1.png" style="height: 450; width:450;"> 
+</p>
+
 
 ### Enformer: CEU vs YRI
 
@@ -85,7 +90,7 @@ approximately equally distributed around the identity line.
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
     ## -0.44002 -0.10597  0.05238  0.02481  0.13789  0.44571        1
 
-    ## [1] "The summary of PrediXcan on YRI group"
+    ## [2] "The summary of PrediXcan on YRI group"
 
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
     ## -0.29366 -0.06436  0.04685  0.05442  0.19410  0.44971        1
@@ -104,7 +109,7 @@ is African ancestry.
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
     ## -0.22731  0.04063  0.15713  0.17553  0.29781  0.75288
 
-    ## [1] "The summary of PrediXcan on YRI group"
+    ## [2] "The summary of PrediXcan on YRI group"
 
     ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
     ## -0.207979  0.001836  0.126608  0.127161  0.246127  0.625439
@@ -122,7 +127,10 @@ decide to ignore the problem for now. Instead, we will make our
 comparison with either absolute value or the squared value of the
 corr.coef.
 
-![](4_Analysis_files/figure-markdown_strict/Absolute_Enf_YRI-1.png)
+<p align="center">
+<img src="/Data/Images/Absolute_Enf_YRI-1.png" style="height: 450; width:450;"> 
+</p>
+
 
 # Prelimary Findings
 
@@ -134,7 +142,9 @@ qqplot((CEU$Enformer)^2,(CEU$Predixcan)^2, xlab = 'The squared value of Enformer
 title("PrediXcan outperforms Enformer in CEU")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/Squared_CEU-1.png)
+<p align="center">
+<img src="/Data/Images/Squared_CEU-1.png" style="height: 450; width:450;"> 
+</p>
 
 ``` r
 ## YRI: Enformer vs. Predixcan
@@ -142,7 +152,9 @@ qqplot((YRI$Enformer)^2,(YRI$Predixcan)^2, xlab = 'The squared value of Enformer
 title("PrediXcan outperforms Enformer in YRI")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/Squared_YRI-1.png)
+<p align="center">
+<img src="/Data/Images/Squared_YRI-1.png" style="height: 450; width:450;"> 
+</p>
 
 Looking at these two plots, it is clear that PrediXcan outperforms
 Enformer in **BOTH** European and African ancestry sample groups.
@@ -155,7 +167,9 @@ qqplot((CEU$Predixcan)^2,(YRI$Predixcan)^2, xlab = 'The squared value of PrediXc
 title("PrediXcan performance in YRI worse than in CEU")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/Squared_PrediXcan-1.png)
+<p align="center">
+<img src="/Data/Images/Squared_PrediXcan-1.png" style="height: 450; width:450;"> 
+</p>
 
 However, PrediXcan suffers a lost in prediction accuracy when its input
 data comes from a non-European individual.
@@ -168,7 +182,9 @@ qqplot((CEU$Enformer)^2,(YRI$Enformer)^2, xlab = 'The squared value of Enformer 
 title("Enformer's performance does not change between EUR and YRI")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/Squared_Enformer-1.png)
+<p align="center">
+<img src="/Data/Images/Squared_Enformer-1.png" style="height: 450; width:450;"> 
+</p>
 
 Enformer’s performance does not change between EUR and YRI. This is a
 exciting finding because it implies that Enformer’s algorithm has the
@@ -186,14 +202,16 @@ qqplot(portability_Enformer,portability_Predixcan);abline(0,1)
 title("Portability of Enformer better than Predixcan")
 ```
 
-![](4_Analysis_files/figure-markdown_strict/Portability-1.png)
+<p align="center">
+<img src="/Data/Images/Portability-1.png" style="height: 450; width:450;"> 
+</p>
 
     ## [1] "portability of Enformer"
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
     ##  0.2691  0.6810  0.9368  1.0966  1.2542  3.6703       1
 
-    ## [1] "portability of PrediXcan"
+    ## [2] "portability of PrediXcan"
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##  0.2293  0.5711  0.9375  0.9813  1.2809  3.0142
@@ -207,7 +225,8 @@ portability then PrediXcan does.
 ``` r
 tibble(Enformer=portability_Enformer,Predixcan=portability_Predixcan )  %>% pivot_longer(cols = c(Enformer,Predixcan),names_to="type",values_to="portability") %>% ggplot(aes(type,portability)) + geom_violin() + geom_boxplot(width=0.3) + geom_jitter(size=2,col='gray') + theme_bw(base_size = 15) + ggtitle("Enformer Portability to YRI Higher than Predixcan")
 ```
-
-![](4_Analysis_files/figure-markdown_strict/Violin-1.png)
+<p align="center">
+<img src="/Data/Images/Violin-1.png" style="height: 450; width:450;"> 
+</p>
 
 This Violin Plot further proves the finding \#4.
