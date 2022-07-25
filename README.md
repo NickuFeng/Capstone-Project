@@ -16,7 +16,7 @@ _Under instructions of professor Hae Kyung Im from University of Chicago._
 - Saideep Gona and Temidayo Adeluwa (for helping us putting this script together) 
 
 
-- The original [Enformer] article(https://www.nature.com/articles/s41592-021-01252-x)  
+- The original [Enformer](https://www.nature.com/articles/s41592-021-01252-x) article 
 **"Effective gene expression prediction from sequence by integrating long-range interactions"**
 
 Žiga Avsec, Vikram Agarwal, Daniel Visentin, Joseph R. Ledsam, Agnieszka Grabska-Barwinska, Kyle R. Taylor, Yannis Assael, John Jumper, Pushmeet Kohli, David R. Kelley
