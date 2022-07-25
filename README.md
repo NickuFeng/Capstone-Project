@@ -16,10 +16,6 @@ _Under instructions of professor Hae Kyung Im from University of Chicago._
 - Saideep Gona and Temidayo Adeluwa (for helping us putting this script together) 
 
 
-- The original [Enformer](https://www.nature.com/articles/s41592-021-01252-x) article 
-**"Effective gene expression prediction from sequence by integrating long-range interactions"**
-
-Žiga Avsec, Vikram Agarwal, Daniel Visentin, Joseph R. Ledsam, Agnieszka Grabska-Barwinska, Kyle R. Taylor, Yannis Assael, John Jumper, Pushmeet Kohli, David R. Kelley
 
 ## Project Introduction
 
@@ -28,3 +24,4 @@ This project uses two deep learning algorithms, [Enformer](https://github.com/de
 ## Project Goal
 
 Our project objective is to use the developer-tuned version of the Enformer model and PrediXcan model to make gene expression predictions. We compare two models’ performance on target genes across individuals from two populations: one group of individuals with African ancestry and the other with European ancestry. The input data is obtained from the publicly available [Geuvadis dataset](https://www.internationalgenome.org/data-portal/data-collection/geuvadis), which contains gene expression measurements in LCL cell lines and DNA sequence data from more than 500 individuals across 5 different populations. 
+
